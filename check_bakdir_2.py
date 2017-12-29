@@ -1,12 +1,14 @@
 # windows
 import os
 import time
+import datetime
 
 
 def timestamp2time(timestamp):
     # 把时间戳转换成python标准日志格式：
     #             (tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=8, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
     time_std = time.localtime(timestamp)
+
     time_human = time.strftime('%Y-%m-%d %H:%M:%S',time_std)
     return time_human
 # a=timestamp2time(1511971201.7386703)
@@ -35,6 +37,12 @@ def get_pair2(dict_a, key_a):                                     # 取出原字
     return new_dict
 
 
+def time_today(t):
+    t = timestamp2time(t)
+    if t < time.strftime('%Y-%m-%d',time.localtime()):
+        print('下面不是最新的文件')
+    else: return ''
+
 dict_a = {}
 total_dict = {}
 final_dict = []
@@ -45,7 +53,7 @@ with open('./bakdir_list.txt', 'rt') as file_content:
         if not current_line:  # if already read all of bak_dir list
             break
         current_line = current_line.strip('\n')  # get a path
-        print(current_line)                                           # 测试读出来的文件地址列表正确性
+        # print(current_line)                                           # 测试读出来的文件地址列表正确性
         ## todo:functionitize the above lines
         # os.chdir(current_line)    pri
         os.chdir(current_line)                       #
@@ -58,9 +66,14 @@ with open('./bakdir_list.txt', 'rt') as file_content:
             temp_t.append(t)
             dict_a[t] = every_file
 
-        # print(t_max)                                                  # 测试最大值读取正确性
         t_max = max(temp_t)
+        #print(t_max)                                                  # 测试最大值读取正确性
+        time_today(t_max)
         # print(temp_t)                                                 # 测试临时列表正确性
         # print(t_max)                                                  # 测试最大值读取正确性
         latest = get_pair2(dict_a, t_max)
         print(latest)
+    print('bak_txt read finished')
+print('close bak_txt_file')
+
+now = datetime.datetime.now()
